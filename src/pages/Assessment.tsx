@@ -94,7 +94,7 @@ export const Assessment: React.FC = () => {
         </div>
         <div className="space-y-2">
           {(data as Question[]).map((question, index) => (
-            <div key={index} className="flex justify-between items-center">
+            <div key={question.instruction} className="flex justify-between items-center">
               <span>Question {index + 1}</span>
               <span className={answers[index]?.length > 0 ? "text-green-500" : "text-red-500"}>
                 {answers[index]?.length > 0 ? "Correct" : "Incorrect"}
