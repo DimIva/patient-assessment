@@ -3,38 +3,53 @@ import { HeaderWithButton } from '../components/HeaderWithButton';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from '../components/Loader';
 import { useFetchQuestions } from '../hooks/useFetchQuestions';
+import { Question } from '../assets/assetsData';
+
+interface Option {
+  name: string;
+  icon: string;
+}
+
+interface Answer {
+  [key: number]: number[];
+}
+
+interface Results {
+  score: number;
+  total: number;
+  percentage: number;
+}
 
 export const Assessment: React.FC = () => {
   const navigate = useNavigate();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+  const [answers, setAnswers] = useState<Answer>({});
   const { data, isLoading, isError } = useFetchQuestions();
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
 
-  
   if (isLoading) {
-    return <Loader title="Loading assessment" />; // Display loader while fetching data
+    return <Loader title="Loading assessment" />;
   }
 
-  if (isError) {
-    return <div>Error loading assessment.</div>; // Display error message if fetching fails
+  if (isError || !data) {
+    return <div>Error loading assessment.</div>;
   }
 
-  const handleAnswer = (answer) => {
+  const handleAnswer = (answer: number[]) => {
     setAnswers({ ...answers, [currentQuestion]: answer });
   };
 
   const handleContinue = () => {
-    if (currentQuestion < data.length - 1) {
+    if (currentQuestion < (data as Question[]).length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResults(true);
     }
   };
 
-  const calculateResults = () => {
+  const calculateResults = (): Results => {
     let correct = 0;
-    data.forEach((question, index) => {
+    (data as Question[]).forEach((question, index) => {
       if (question.type === 'single' || question.type === 'multiple') {
         if (JSON.stringify(answers[index]) === JSON.stringify(question.correctAnswers)) {
           correct++;
@@ -43,8 +58,8 @@ export const Assessment: React.FC = () => {
     });
     return {
       score: correct,
-      total: data.length,
-      percentage: Math.round((correct / data.length) * 100)
+      total: (data as Question[]).length,
+      percentage: Math.round((correct / (data as Question[]).length) * 100)
     };
   };
 
@@ -78,7 +93,7 @@ export const Assessment: React.FC = () => {
           </div>
         </div>
         <div className="space-y-2">
-          {data.map((question, index) => (
+          {(data as Question[]).map((question, index) => (
             <div key={index} className="flex justify-between items-center">
               <span>Question {index + 1}</span>
               <span className={answers[index]?.length > 0 ? "text-green-500" : "text-red-500"}>
@@ -115,13 +130,13 @@ export const Assessment: React.FC = () => {
   }
 
   const renderQuestion = () => {
-    const question = data[currentQuestion];
+    const question = (data as Question[])[currentQuestion];
     switch (question.type) {
       case 'single':
       case 'multiple':
         return (
           <div className="space-y-2">
-            {question.options.map((option, index) => (
+            {(question.options as string[]).map((option, index) => (
               <div
                 key={index}
                 className={`p-3 border rounded-lg ${
@@ -141,7 +156,7 @@ export const Assessment: React.FC = () => {
       case 'identify':
         return (
           <div className="space-y-2">
-            {question.options.map((option, index) => (
+            {(question.options as Option[]).map((option, index) => (
               <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex items-center space-x-2">
                   <span className="text-2xl">{option.icon}</span>
@@ -172,7 +187,7 @@ export const Assessment: React.FC = () => {
     <div className="max-w-md mx-auto p-4 space-y-4">
       <HeaderWithButton onClick={() => navigate("../assessment-create")} title="Assessment" />
       <div className="flex space-x-1">
-        {data.map((_, index) => (
+        {(data as Question[]).map((_, index) => (
           <div
             key={index}
             className={`h-1 flex-grow ${
@@ -181,14 +196,14 @@ export const Assessment: React.FC = () => {
           />
         ))}
       </div>
-      <h2 className="text-xl font-semibold">{data[currentQuestion].question}</h2>
-      <p className="text-sm text-gray-600">{data[currentQuestion].instruction}</p>
+      <h2 className="text-xl font-semibold">{(data as Question[])[currentQuestion].question}</h2>
+      <p className="text-sm text-gray-600">{(data as Question[])[currentQuestion].instruction}</p>
       {renderQuestion()}
       <button
         className="w-full py-3 bg-black text-white rounded-full"
         onClick={handleContinue}
       >
-        {currentQuestion === data.length - 1 ? 'Finish' : 'Continue'}
+        {currentQuestion === (data as Question[]).length - 1 ? 'Finish' : 'Continue'}
       </button>
     </div>
   );

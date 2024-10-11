@@ -3,6 +3,7 @@ interface SingleChoiceQuestion {
   question: string;
   instruction: string;
   options: string[];
+  correctAnswers: number[];
 }
 
 interface MultipleChoiceQuestion {
@@ -35,6 +36,7 @@ const testQuestions: Question[] = [
     question: 'How many fingers do you see?',
     instruction: 'Please show the patient a certain amount of fingers and note their reaction.',
     options: ['Correct', 'Incorrect'],
+    correctAnswers: [0],
   },
   {
     type: 'multiple',

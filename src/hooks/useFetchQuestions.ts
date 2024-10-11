@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchQuestions, Question } from "../assets/assetsData";
+import { fetchQuestions } from "../assets/assetsData";
 
 export const useFetchQuestions = () => {
-  return useQuery<Question[], Error>({
+  return useQuery({
     queryKey: ['questions'],
     queryFn: fetchQuestions,
   });
