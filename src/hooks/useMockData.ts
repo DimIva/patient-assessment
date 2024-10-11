@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { mockData as initialData } from '../assets/mockData';
+import {IData, mockData as initialData } from '../assets/mockData';
 
 // Create a mutable copy of the initial mock data
 const mockData = [...initialData]; 
 
 // Function to fetch mock data, simulating a server call
-const fetchMockData = async () => {
+const fetchMockData = async (): Promise<IData[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockData); // Resolve with the current mock data

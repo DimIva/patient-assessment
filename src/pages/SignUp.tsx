@@ -31,7 +31,7 @@ export const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex flex-col gap-[20px] justify-center items-center h-screen">
       <form onSubmit={handleSignUp} className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h1 className="text-2xl mb-4">Sign Up</h1>
         {error && <p className="text-red-500">{error}</p>} {/* Display error message if exists */}
@@ -57,7 +57,7 @@ export const SignUp = () => {
         </button>
       </form>
 
-      <p>Already have an account? Go to <Link to={'../sign-in'}>sign in</Link></p>
+      <p>Already have an account? Go to <Link className="text-sky-500" to={'../sign-in'}>sign in</Link></p>
     </div>
   );
 };
